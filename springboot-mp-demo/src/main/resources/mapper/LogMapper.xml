@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yoga.sales.mapper.LogMapper">
+
+	<resultMap id="BaseResultMap" type="com.yoga.sales.pojo.Log" >
+		<result column="id" property="id"/>
+		<result column="user_id" property="userId"/>
+		<result column="log_level" property="logLevel"/>
+		<result column="category" property="category"/>
+		<result column="log_time" property="logTime"/>
+		<result column="ip" property="ip"/>
+		<result column="url" property="url"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="acct_id" property="acctId"/>
+		<result column="version" property="version"/>
+	</resultMap>
+
+	<select id="queryLogByTimeFilter" resultType="com.yoga.sales.pojo.Log">
+		select s.id,s.acct_id,s.user_id,s.log_level,s.category,s.ip,s.log_time,s.url,s.title,s.content,s.version from SYS_LOG s
+		where s.acct_id = #{acctId}
+		and s.title in (select INTERNAL_CODE from standard_code t where t.id in
+		<foreach collection="standardCodeIds" item="standardCodeId"  open="(" separator="," close=")">#{standardCodeId}</foreach>)
+		and s.log_time between #{startDate} and #{endDate}
+
+	</select>
+
+
+</mapper>

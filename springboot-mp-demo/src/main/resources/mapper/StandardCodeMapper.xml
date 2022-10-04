@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yoga.sales.mapper.StandardCodeMapper">
+
+	<resultMap type="com.yoga.sales.pojo.StandardCode" id="StandardTreeMap">
+<!--		<result column="ID" property="id" jdbcType="VARCHAR" />-->
+<!--		<result column="GROUP_CODE" property="groupCode" jdbcType="VARCHAR" />-->
+<!--		<result column="INTERNAL_CODE" property="internalCode" jdbcType="VARCHAR" />-->
+<!--		<collection property="children" javaType="list" column="{GROUP_CODE=GROUP_CODE}" select="selectChildrenTree"/>-->
+		<result column="GROUP_CODE" property="groupCode" jdbcType="VARCHAR" />
+		<result column="INTERNAL_CODE" property="internalCode" jdbcType="VARCHAR" />
+		<result column="COMMENTS" property="comments" jdbcType="VARCHAR" />
+		<result column="ID" property="id" jdbcType="DECIMAL" />
+	</resultMap>
+
+	<select id="selectChildrenTree" resultType="com.yoga.sales.pojo.StandardCode">
+		select ID, GROUP_CODE, INTERNAL_CODE , COMMENTS from standard_code where GROUP_CODE =#{GROUP_CODE}
+	</select>
+
+	<!--select group coded node -->
+	<select id="getActivityLogCode" resultMap="StandardTreeMap">
+		select  ID, GROUP_CODE, INTERNAL_CODE , COMMENTS  from standard_code t
+		where t.GROUP_CODE in
+		<foreach collection="groupCodeList" item="groupCode"  open="(" separator="," close=")">
+			#{groupCode}
+		</foreach>
+		and t.LANGUAGE = #{language,jdbcType=VARCHAR}
+		order by t.id asc
+	</select>
+
+
+</mapper>
